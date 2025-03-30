@@ -1,33 +1,21 @@
-HELP.md
+# Archivos de compilación de Spring Boot
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+*.jar
+*.war
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# Archivos de IntelliJ
+.idea/
 *.iml
-*.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Archivos de configuración sensible
+src/main/resources/application.properties
+src/main/resources/application.yml
 
-### VS Code ###
-.vscode/
+# Logs
+*.log
+
+# Maven Wrapper (si usas Maven, mantenlo; si no, puedes quitarlo)
+!.mvn/wrapper/maven-wrapper.jar
+
+# Archivos de base de datos
+data/
