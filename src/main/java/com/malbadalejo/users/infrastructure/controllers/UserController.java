@@ -47,7 +47,13 @@ public class UserController {
             User user = getUserUseCase.execute(email)
                     .orElseGet(() -> createUserUseCase.execute(email, displayName, profilePictureUrl, new Account(AccountProvider.GOOGLE, request.getExternalId())));
 
-            String jwt = jwtService.generateToken(user.getUserId(), user.getEmail(), user.getDisplayName(), user.getProfilePictureUrl());
+            String jwt = jwtService.generateToken(
+                    user.getUserId(),
+                    user.getEmail(),
+                    user.getDisplayName(),
+                    user.getProfilePictureUrl(),
+                    user.getRole()  // Añadir el rol
+            );
             UserResponse userResponse = new UserResponse(user.getUserId(), user.getEmail(), user.getDisplayName(), user.getProfilePictureUrl());
 
             Map<String, Object> response = new HashMap<>();

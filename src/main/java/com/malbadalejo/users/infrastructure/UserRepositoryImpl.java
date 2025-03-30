@@ -41,9 +41,10 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getEmail(),
                 user.getDisplayName(),
                 user.getProfilePictureUrl(),
-                new ArrayList<>(), // Se llenará con las cuentas a continuación
+                new ArrayList<>(),
                 user.getCreatedAt(),
-                user.getUpdatedAt()
+                user.getUpdatedAt(),
+                user.getRole()
         );
 
         // Mapear las cuentas
@@ -66,11 +67,10 @@ public class UserRepositoryImpl implements UserRepository {
                 userJpa.getEmail(),
                 userJpa.getDisplayName(),
                 userJpa.getProfilePictureUrl(),
-                userJpa.getAccounts().stream()
-                        .map(this::toAccount)
-                        .collect(Collectors.toList()),
+                userJpa.getAccounts().stream().map(this::toAccount).collect(Collectors.toList()),
                 userJpa.getCreatedAt(),
-                userJpa.getUpdatedAt()
+                userJpa.getUpdatedAt(),
+                userJpa.getRole()
         );
     }
 

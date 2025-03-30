@@ -1,5 +1,6 @@
 package com.malbadalejo.users.infrastructure;
 
+import com.malbadalejo.users.domain.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,8 +32,12 @@ public class UserJpa {
 
     private LocalDateTime updatedAt;
 
-    public UserJpa(UUID userId, String email, String displayName, String profilePictureUrl, List<AccountJpa> accounts,
-                   LocalDateTime createdAt, LocalDateTime updatedAt) {
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    public UserJpa(UUID userId, String email, String displayName, String profilePictureUrl,
+                   List<AccountJpa> accounts, LocalDateTime createdAt, LocalDateTime updatedAt,
+                   UserRole role) {
         this.userId = userId;
         this.email = email;
         this.displayName = displayName;
@@ -40,6 +45,7 @@ public class UserJpa {
         this.accounts = accounts != null ? new ArrayList<>(accounts) : new ArrayList<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.role = role != null ? role : UserRole.USER;
     }
 
     // Método auxiliar para agregar una cuenta y mantener la relación bidireccional

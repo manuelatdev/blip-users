@@ -18,6 +18,7 @@ public class User {
     private final List<Account> accounts;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UserRole role;  // Nuevo campo
 
     public User(String email) {
         this.userId = UUID.randomUUID();
@@ -27,6 +28,7 @@ public class User {
         this.accounts = new ArrayList<>();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = this.createdAt;
+        this.role = UserRole.USER;  // Por defecto, todos son USER
     }
 
     public User(String email, String displayName, String profilePictureUrl) {
@@ -37,10 +39,12 @@ public class User {
         this.accounts = new ArrayList<>();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = this.createdAt;
+        this.role = UserRole.USER;  // Por defecto, todos son USER
     }
 
-    public User(UUID userId, String email, String displayName, String profilePictureUrl, List<Account> accounts,
-                LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User(UUID userId, String email, String displayName, String profilePictureUrl,
+                List<Account> accounts, LocalDateTime createdAt, LocalDateTime updatedAt,
+                UserRole role) {
         this.userId = Objects.requireNonNull(userId, "userId no puede ser null");
         this.email = Objects.requireNonNull(email, "email no puede ser null");
         this.displayName = displayName;
@@ -48,6 +52,7 @@ public class User {
         this.accounts = accounts != null ? new ArrayList<>(accounts) : new ArrayList<>();
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt no puede ser null");
         this.updatedAt = Objects.requireNonNull(updatedAt, "updatedAt no puede ser null");
+        this.role = role != null ? role : UserRole.USER;
     }
 
     public void addAccount(Account account) {
@@ -70,5 +75,10 @@ public class User {
 
     public boolean hasAccountForProvider(AccountProvider provider) {
         return accounts.stream().anyMatch(a -> a.getProvider().equals(provider));
+    }
+
+    public void setRole(UserRole role) {  // Método para modificar el rol
+        this.role = role;
+        this.updatedAt = LocalDateTime.now();
     }
 }
