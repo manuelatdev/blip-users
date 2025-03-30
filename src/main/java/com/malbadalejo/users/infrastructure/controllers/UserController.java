@@ -9,6 +9,7 @@ import com.malbadalejo.users.infrastructure.dto.GoogleAuthRequest;
 import com.malbadalejo.users.infrastructure.dto.UserResponse;
 import com.malbadalejo.users.infrastructure.services.GoogleTokenInfo;
 import com.malbadalejo.users.infrastructure.services.GoogleTokenVerifierService;
+import com.malbadalejo.users.infrastructure.services.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -26,9 +30,10 @@ public class UserController {
     private final GetUserUseCase getUserUseCase;
     private final CreateUserUseCase createUserUseCase;
     private final GoogleTokenVerifierService googleTokenVerifierService;
+    private final JwtService jwtService;
 
     @PostMapping("/google")
-    public ResponseEntity<UserResponse> authenticateWithGoogle(@Valid @RequestBody GoogleAuthRequest request) {
+    public ResponseEntity<Map<String, Object>> authenticateWithGoogle(@Valid @RequestBody GoogleAuthRequest request) {
         try {
             // Validar el idToken de Google y obtener email y displayName
             GoogleTokenInfo tokenInfo = googleTokenVerifierService.verify(request.getIdToken());
@@ -42,8 +47,13 @@ public class UserController {
             User user = getUserUseCase.execute(email)
                     .orElseGet(() -> createUserUseCase.execute(email, displayName, profilePictureUrl, new Account(AccountProvider.GOOGLE, request.getExternalId())));
 
-            // Mapear a una respuesta DTO
-            UserResponse response = new UserResponse(user.getUserId(), user.getEmail(), user.getDisplayName(), user.getProfilePictureUrl());
+            String jwt = jwtService.generateToken(user.getUserId(), user.getEmail(), user.getDisplayName(), user.getProfilePictureUrl());
+            UserResponse userResponse = new UserResponse(user.getUserId(), user.getEmail(), user.getDisplayName(), user.getProfilePictureUrl());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("user", userResponse);
+            response.put("token", jwt);
+
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             System.err.println("Verification failed: " + e.getMessage());
