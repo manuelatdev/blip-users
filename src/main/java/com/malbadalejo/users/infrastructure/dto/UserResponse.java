@@ -1,5 +1,6 @@
 package com.malbadalejo.users.infrastructure.dto;
 
+import com.malbadalejo.users.domain.UserRole;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,4 +13,5 @@ public class UserResponse {
     private final String email;
     private final String displayName;
     private final String profilePictureUrl;
+    private final UserRole userRole;
 }
